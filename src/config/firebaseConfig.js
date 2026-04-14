@@ -8,12 +8,10 @@ const firebaseConfig = {
   projectId: "edunova-lms",
   storageBucket: "edunova-lms.firebasestorage.app",
   messagingSenderId: "61735328527",
-  appId: "1:61735328527:web:5a5f0a7dccc5505a29bc7a"
+  appId: "1:61735328527:web:5a5f0a7dccc5505a29bc7a",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const auth =getAuth(app);
-
-export const db =getFirestore(app);
-export default app;
+export const auth = getAuth(app);
+export const db = getFirestore(app);

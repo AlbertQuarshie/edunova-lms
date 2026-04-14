@@ -6,13 +6,13 @@ import {
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
-// Register a new student 
+// REGISTER: Creates account + Adds to 'users' collection
 export const registerStudent = async (email, password, fullName) => {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  const user = userCredential.user;
-
-  // Initialize student profile in Firestore 
+  const { user } = await createUserWithEmailAndPassword(auth, email, password);
+  
+  // Create a profile in Firestore so we know the student's name
   await setDoc(doc(db, "users", user.uid), {
+    uid: user.uid,
     name: fullName,
     email: email,
     role: "student",
@@ -21,10 +21,10 @@ export const registerStudent = async (email, password, fullName) => {
   return user;
 };
 
-// Login existing student
+// LOGIN: Simple authentication
 export const loginStudent = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
-// Logout
+// LOGOUT
 export const logoutUser = () => signOut(auth);
