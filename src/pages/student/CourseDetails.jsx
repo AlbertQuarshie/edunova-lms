@@ -1,73 +1,106 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getCourseById, enrollInCourse } from '../../services/courseService';
+import { useAuth } from '../../hooks/useAuth';
 
 const CourseDetails = () => {
   const { id } = useParams();
+  const { user } = useAuth(); // 'user' is now used in handleEnroll below
+  const navigate = useNavigate();
+  
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [enrolling, setEnrolling] = useState(false);
 
-  const courseContent = {
-    title: "React Web Development",
-    instructor: "Sarah Drasner",
-    modules: [
-      { id: 1, title: "Introduction to JSX", completed: true },
-      { id: 2, title: "Components and Props", completed: true },
-      { id: 3, title: "State and Lifecycle", completed: false },
-      { id: 4, title: "Handling Events", completed: false },
-    ]
+  useEffect(() => {
+    const fetchCourseData = async () => {
+      try {
+        const data = await getCourseById(id);
+        setCourse(data);
+      } catch (err) {
+        console.error(err);
+        navigate('/courses');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourseData();
+  }, [id, navigate]);
+
+  const handleEnroll = async () => {
+    if (!user) {
+      alert("Please login to enroll");
+      return navigate('/login');
+    }
+
+    setEnrolling(true);
+    try {
+      await enrollInCourse(user.uid, id, course.title);
+      alert(`Successfully enrolled in ${course.title}!`);
+      navigate('/dashboard');
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setEnrolling(false);
+    }
   };
 
-  // Logic to satisfy the linter and make the UI dynamic
-  const completedCount = courseContent.modules.filter(m => m.completed).length;
-  const progressPercent = (completedCount / courseContent.modules.length) * 100;
+  if (loading) return <div className="p-10 text-center text-gray-500">Loading course details...</div>;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Back Link */}
-      <Link to="/courses" className="text-blue-600 font-medium hover:underline flex items-center gap-2">
-        ← Back to Courses
-      </Link>
-
-      <header className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-        {/* Using id in a data attribute satisfies the linter */}
-        <h1 className="text-3xl font-bold text-gray-800" data-course-id={id}>
-          {courseContent.title}
-        </h1>
-        <p className="text-gray-500 mt-2">Instructor: {courseContent.instructor}</p>
-        
-        {/* Dynamic Progress Bar */}
-        <div className="mt-6 h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-green-500 transition-all duration-500" 
-            style={{ width: `${progressPercent}%` }}
-          ></div>
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        {/* Course Header */}
+        <div className="h-64 bg-gradient-to-r from-blue-600 to-indigo-700 p-8 flex flex-col justify-end text-white">
+          <span className="px-3 py-1 bg-white/20 backdrop-blur-md text-xs font-bold rounded-full w-fit mb-4 uppercase">
+            {course.category || 'General'}
+          </span>
+          <h1 className="text-4xl font-bold">{course.title}</h1>
+          <p className="mt-2 text-blue-100 italic">Instructor: {course.instructor || 'TBD'}</p>
         </div>
-        <p className="text-xs text-gray-400 mt-2 font-medium">
-          {progressPercent}% Course Completed ({completedCount}/{courseContent.modules.length})
-        </p>
-      </header>
 
-      <section className="space-y-4">
-        <h2 className="text-xl font-bold text-gray-800">Course Modules</h2>
-        <div className="space-y-3">
-          {courseContent.modules.map((module) => (
-            <div 
-              key={module.id} 
-              className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 hover:border-blue-200 transition-colors"
-            >
-              <div className="flex items-center gap-4">
-                <span className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-sm ${module.completed ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
-                  {module.completed ? '✓' : module.id}
-                </span>
-                <span className={`font-medium ${module.completed ? 'text-gray-800' : 'text-gray-500'}`}>
-                  {module.title}
-                </span>
-              </div>
-              <button className="text-sm font-bold text-blue-600 hover:text-blue-800">
-                {module.completed ? "Review" : "Start"}
-              </button>
+        <div className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="md:col-span-2 space-y-6">
+              <section>
+                <h2 className="text-xl font-bold text-gray-800 mb-2">About this Course</h2>
+                <p className="text-gray-600 leading-relaxed">{course.description}</p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Syllabus Highlights</h2>
+                <ul className="space-y-3">
+                  {['Introduction', 'Core Concepts', 'Advanced Projects'].map((item, index) => (
+                    <li key={index} className="flex items-center text-gray-600">
+                      <span className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold mr-3">
+                        {index + 1}
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
             </div>
-          ))}
+
+            {/* Enrollment Sidebar Card */}
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 h-fit">
+              <h3 className="font-bold text-gray-800 mb-4">Ready to start?</h3>
+              <button 
+                disabled={enrolling}
+                onClick={handleEnroll}
+                className={`w-full py-3 text-white font-bold rounded-lg shadow-lg transition transform ${
+                  enrolling ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700 hover:-translate-y-1'
+                }`}
+              >
+                {enrolling ? 'Enrolling...' : 'Enroll Now'}
+              </button>
+              <p className="text-xs text-center text-gray-500 mt-4">
+                Access your materials immediately after enrollment.
+              </p>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
