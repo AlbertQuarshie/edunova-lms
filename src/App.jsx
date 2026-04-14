@@ -13,14 +13,13 @@ import Register from './pages/auth/Register';
 import Dashboard from './pages/student/Dashboard';
 import Courses from './pages/student/Courses';
 import CourseDetails from './pages/student/CourseDetails';
+import Assignments from './pages/student/Assignments';
 
 
 function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Mock user data. Removed 'setUser' since it isn't used yet.
-  // You can add it back as '_setUser' if you need it later.
   const [user] = useState({
     name: "Alex Johnson",
     studentId: "STU-2026-04",
@@ -60,7 +59,7 @@ function App() {
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/courses" element={<Courses />} />
                         <Route path="/courses/:id" element={<CourseDetails />} />
-                      
+                      <Route path="/assignments" element={<Assignments />} />
                         
                         {/* Default internal redirect */}
                         <Route path="/" element={<Navigate to="/dashboard" />} />
