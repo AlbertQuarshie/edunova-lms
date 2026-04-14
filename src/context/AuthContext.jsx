@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { auth } from "../config/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../config/firebaseConfig";
 import { AuthContext } from "../hooks/useAuth";
 
 export const AuthProvider = ({ children }) => {
@@ -8,17 +8,18 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Manages the logged-in user state [cite: 81]
+    // This function runs every time the user's status changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setLoading(false);
+      setLoading(false); // Stop showing the loading spinner once we know the status
     });
+
     return () => unsubscribe();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ user, loading }}>
+      {children}
     </AuthContext.Provider>
   );
 };
