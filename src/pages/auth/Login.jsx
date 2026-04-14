@@ -1,52 +1,54 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Login Attempt:", { email, password });
-
+   
+    setIsAuthenticated(true);
+    navigate('/dashboard');
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg">
-        <h2 className="text-3xl font-bold text-center text-gray-800">Edunova LMS</h2>
-        <p className="text-center text-gray-500">Sign in to access your Dashboard</p>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+      {/* Container Card */}
+      <div className="w-full max-w-sm p-8 bg-white rounded-2xl shadow-sm border border-gray-100 text-center">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Student Portal</h2>
+        <p className="text-gray-500 text-sm mb-8">Please enter your credentials</p>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email Address</label>
-            <input 
-              type="email" 
-              className="w-full px-4 py-2 mt-1 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-              placeholder="student@university.edu"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
-            <input 
-              type="password" 
-              className="w-full px-4 py-2 mt-1 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button className="w-full py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <input 
+            type="email" 
+            placeholder="Email Address"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <input 
+            type="password" 
+            placeholder="Password"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <button 
+            type="submit" 
+            className="w-full py-3 mt-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-100"
+          >
             Login
           </button>
         </form>
-        
-        <p className="text-sm text-center text-gray-600">
-          New student? <Link to="/register" className="text-blue-600 hover:underline">Create an account</Link>
+
+        <p className="mt-6 text-sm text-gray-600">
+          New here? <Link to="/register" className="text-blue-600 font-semibold hover:underline">Create an account</Link>
         </p>
       </div>
     </div>
