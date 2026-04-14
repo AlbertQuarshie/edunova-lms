@@ -14,6 +14,7 @@ import Dashboard from './pages/student/Dashboard';
 import Courses from './pages/student/Courses';
 import CourseDetails from './pages/student/CourseDetails';
 import Assignments from './pages/student/Assignments';
+import Results from './pages/student/Results';
 
 
 function App() {
@@ -59,7 +60,8 @@ function App() {
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/courses" element={<Courses />} />
                         <Route path="/courses/:id" element={<CourseDetails />} />
-                      <Route path="/assignments" element={<Assignments />} />
+                        <Route path="/assignments" element={<Assignments />} />
+                        <Route path="/results" element={<Results />} />
                         
                         {/* Default internal redirect */}
                         <Route path="/" element={<Navigate to="/dashboard" />} />

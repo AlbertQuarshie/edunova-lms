@@ -5,10 +5,10 @@ const Sidebar = () => {
   const location = useLocation();
 
   const menuItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: '🏠' },
-    { name: 'My Courses', path: '/courses', icon: '📚' },
-    { name: 'Assignments', path: '/assignments', icon: '📝' },
-    { name: 'Results', path: '/results', icon: '📊' },
+    { name: 'Dashboard', path: '/dashboard' },
+    { name: 'My Courses', path: '/courses' },
+    { name: 'Assignments', path: '/assignments' },
+    { name: 'Results', path: '/results'},
   ];
 
   return (
@@ -41,7 +41,6 @@ const Sidebar = () => {
         })}
       </nav>
 
-      {/* Footer / Branding Tip */}
       <div className="p-6 bg-gray-50 m-4 rounded-2xl border border-gray-100">
         <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Student Portal v1.0</p>
       </div>
