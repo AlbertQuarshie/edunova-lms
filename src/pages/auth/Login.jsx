@@ -14,42 +14,62 @@ const Login = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-      {/* Container Card */}
-      <div className="w-full max-w-sm p-8 bg-white rounded-2xl shadow-sm border border-gray-100 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Student Portal</h2>
-        <p className="text-gray-500 text-sm mb-8">Please enter your credentials</p>
-        
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          <input 
-            type="email" 
-            placeholder="Email Address"
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+    <div className="min-h-[85vh] flex items-center justify-center bg-white px-6">
+      <div className="max-w-md w-full border border-gray-100 p-10 rounded-2xl shadow-2xl">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold tracking-tighter uppercase">
+           Edunova LMS
+          </h2>
+          <p className="text-gray-400 mt-2 text-sm">
+            Enter your details to login.
+          </p>
+        </div>
 
-          <input 
-            type="password" 
-            placeholder="Password"
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div>
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
+              Email Address
+            </label>
+            <input
+              type="email"
+              required
+              className="w-full p-4 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:border-black transition"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-          <button 
-            type="submit" 
-            className="w-full py-3 mt-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-100"
+          <div>
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              required
+              className="w-full p-4 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:border-black transition"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-black text-white py-4 rounded-lg font-bold hover:bg-gray-800 transition shadow-lg"
           >
-            Login
+            Sign In
           </button>
         </form>
 
-        <p className="mt-6 text-sm text-gray-600">
-          New here? <Link to="/register" className="text-blue-600 font-semibold hover:underline">Create an account</Link>
-        </p>
+        <div className="mt-8 text-center text-sm">
+          <p className="text-gray-500">
+            First time here?{" "}
+            <Link to="/register" className="text-black font-bold hover:underline">
+              Create an account
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

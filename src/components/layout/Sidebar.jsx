@@ -9,6 +9,7 @@ const Sidebar = () => {
     { name: 'My Courses', path: '/courses' },
     { name: 'Assignments', path: '/assignments' },
     { name: 'Results', path: '/results'},
+    { name: 'Profile', path: '/profile'},
   ];
 
   return (

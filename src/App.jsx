@@ -15,6 +15,7 @@ import Courses from './pages/student/Courses';
 import CourseDetails from './pages/student/CourseDetails';
 import Assignments from './pages/student/Assignments';
 import Results from './pages/student/Results';
+import Profile from './pages/student/Profile';
 
 
 function App() {
@@ -47,7 +48,7 @@ function App() {
             element={
               isAuthenticated ? (
                 <div className="flex">
-                  {/* Sidebar handles main navigation */}
+                  
                   <Sidebar setIsAuthenticated={setIsAuthenticated} />
                   
                   {/* Main content area */}
@@ -62,8 +63,9 @@ function App() {
                         <Route path="/courses/:id" element={<CourseDetails />} />
                         <Route path="/assignments" element={<Assignments />} />
                         <Route path="/results" element={<Results />} />
+                        <Route path="/profile" element={<Profile />} />
                         
-                        {/* Default internal redirect */}
+                 
                         <Route path="/" element={<Navigate to="/dashboard" />} />
                       
                       </Routes>

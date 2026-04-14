@@ -23,7 +23,10 @@ const Register = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg border border-gray-200">
-        <h2 className="text-3xl font-bold text-center text-gray-800">Join the Portal</h2>
+        <h2 className="text-3xl font-bold text-center text-gray-800">Edunova LMS</h2>
+         <p className="text-gray-400 mt-2 text-sm text-center">
+            Enter your details to login.
+          </p>
         
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
