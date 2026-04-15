@@ -13,8 +13,6 @@ import Register from './pages/auth/Register';
 import Dashboard from './pages/student/Dashboard';
 import Courses from './pages/student/Courses';
 import CourseDetails from './pages/student/CourseDetails';
-import Assignments from './pages/student/Assignments';
-import Results from './pages/student/Results';
 import Profile from './pages/student/Profile';
 import MyCourses from './pages/student/MyCourses';
 
@@ -51,8 +49,6 @@ function App() {
                           <Route path="/courses" element={<Courses />} />
                           <Route path="/my-courses" element={<MyCourses />} />
                           <Route path="/courses/:id" element={<CourseDetails />} />
-                          <Route path="/assignments" element={<Assignments />} />
-                          <Route path="/results" element={<Results />} />
                           <Route path="/profile" element={<Profile />} />
 
                           {/* Admin Only Routes */}

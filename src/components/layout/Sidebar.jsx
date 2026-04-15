@@ -25,8 +25,6 @@ const Sidebar = () => {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Browse Courses', path: '/courses', icon: Search },
     { name: 'My Courses', path: '/my-courses', icon: BookOpen },
-    { name: 'Assignments', path: '/assignments', icon: ClipboardList },
-    { name: 'Results', path: '/results', icon: BarChart3 },
   ];
 
   // Links visible only to Admins
