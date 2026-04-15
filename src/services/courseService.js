@@ -30,27 +30,20 @@ export const getCourseById = async (courseId) => {
 
 // Enroll a student in a course
 export const enrollInCourse = async (userId, courseId, courseTitle) => {
-  // Check if already enrolled to prevent duplicates
-  const q = query(
-    collection(db, "enrollments"), 
-    where("userId", "==", userId), 
-    where("courseId", "==", courseId)
-  );
-  
-  const existing = await getDocs(q);
-  if (!existing.empty) {
-    throw new Error("You are already enrolled in this course!");
+  try {
+    const docRef = await addDoc(collection(db, "enrollments"), {
+      userId: userId,     // This MUST match the rule (request.resource.data.userId)
+      courseId: courseId,
+      courseTitle: courseTitle,
+      enrolledAt: new Date(),
+      status: "active",
+      progress: 0
+    });
+    return docRef;
+  } catch (error) {
+    console.error("Enrollment Service Error:", error);
+    throw error;
   }
-
-  // Create the enrollment document
-  return await addDoc(collection(db, "enrollments"), {
-    userId,
-    courseId,
-    courseTitle,
-    enrolledAt: new Date(),
-    status: "active",
-    progress: 0
-  });
 };
 
 // Fetch all enrollments for a specific student

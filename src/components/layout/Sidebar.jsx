@@ -1,16 +1,28 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { logoutUser } from '../../services/authService';
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard' },
-    { name: 'My Courses', path: '/courses' },
-    { name: 'Assignments', path: '/assignments' },
-    { name: 'Results', path: '/results'},
-    { name: 'Profile', path: '/profile'},
+    { name: 'Browse Courses', path: '/courses' }, 
+    { name: 'My Courses', path: '/my-courses' },  
+    { name: 'Assignments', path: '/assignments'},
+    { name: 'Results', path: '/results' },
+    { name: 'Profile', path: '/profile' },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      navigate('/login');
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
   return (
     <div className="w-64 bg-white h-screen border-r border-gray-200 flex flex-col fixed left-0 top-0 z-10">
@@ -42,8 +54,19 @@ const Sidebar = () => {
         })}
       </nav>
 
-      <div className="p-6 bg-gray-50 m-4 rounded-2xl border border-gray-100">
-        <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Student Portal v1.0</p>
+      {/* Logout & Version */}
+      <div className="p-4 space-y-4">
+        <button 
+          onClick={handleLogout}
+          className="w-full flex items-center p-3 text-red-600 font-semibold hover:bg-red-50 rounded-xl transition-colors"
+        >
+          <span className="mr-3">🚪</span>
+          Logout
+        </button>
+        
+        <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Student Portal v1.0</p>
+        </div>
       </div>
     </div>
   );

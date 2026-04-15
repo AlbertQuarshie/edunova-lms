@@ -16,6 +16,7 @@ import CourseDetails from './pages/student/CourseDetails';
 import Assignments from './pages/student/Assignments';
 import Results from './pages/student/Results';
 import Profile from './pages/student/Profile';
+import MyCourses from './pages/student/MyCourses';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
                         <Routes>
                           <Route path="/dashboard" element={<Dashboard />} />
                           <Route path="/courses" element={<Courses />} />
+                          <Route path="/my-courses" element={<MyCourses />} />
                           <Route path="/courses/:id" element={<CourseDetails />} />
                           <Route path="/assignments" element={<Assignments />} />
                           <Route path="/results" element={<Results />} />
