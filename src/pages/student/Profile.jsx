@@ -1,48 +1,70 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
+import { getUserProfile } from '../../services/userService';
 
 const Profile = () => {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user) {
+        const data = await getUserProfile(user.uid);
+        setProfile(data);
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, [user]);
+
+  if (loading) return <div className="p-10 text-center text-gray-500">Loading profile...</div>;
+
   return (
-    <div className="max-w-2xl space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold text-gray-800">My Profile</h1>
-        <p className="text-gray-500">Manage your account information and preferences.</p>
-      </header>
-
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-        <div className="flex items-center gap-6 mb-8 pb-8 border-b border-gray-50">
-          <div className="h-24 w-24 bg-blue-100 rounded-full flex items-center justify-center text-3xl font-bold text-blue-600">
-            AJ
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">My Account</h1>
+      
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        {/* Profile Header Background */}
+        <div className="h-32 bg-blue-600"></div>
+        
+        <div className="px-8 pb-8">
+          <div className="relative flex justify-between items-end -mt-12 mb-6">
+            <div className="w-24 h-24 bg-white rounded-2xl shadow-md flex items-center justify-center text-3xl border-4 border-white">
+              
+            </div>
+          
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-gray-800">Alex Johnson</h2>
-            <p className="text-blue-500 font-medium">Software Development Student</p>
-            <p className="text-gray-400 text-sm mt-1">Joined: January 2026</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Full Name</label>
+                <p className="text-lg font-semibold text-gray-800">{profile?.name || 'Not set'}</p>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Email Address</label>
+                <p className="text-lg font-semibold text-gray-800">{user?.email}</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Student ID</label>
+                <p className="text-sm font-mono text-gray-500">{user?.uid}</p>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Account Created</label>
+                <p className="text-lg font-semibold text-gray-800">
+                  {user?.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString() : 'N/A'}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Student ID</label>
-            <p className="text-gray-800 font-medium">STU-2026-04</p>
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email</label>
-            <p className="text-gray-800 font-medium">alex.j@example.edu</p>
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Phone</label>
-            <p className="text-gray-800 font-medium">+1 (555) 000-1234</p>
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Current Year</label>
-            <p className="text-gray-800 font-medium">2nd Year (Sophomore)</p>
-          </div>
-        </div>
-
-        <button className="mt-8 px-6 py-2 bg-gray-800 text-white rounded-xl font-bold text-sm hover:bg-gray-900 transition-colors">
-          Edit Profile Details
-        </button>
       </div>
+
+    
     </div>
   );
 };
