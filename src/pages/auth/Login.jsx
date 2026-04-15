@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { loginStudent, signInWithGoogle } from '../../services/authService';
+import { loginUser, signInWithGoogle } from '../../services/authService';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -17,7 +17,8 @@ const Login = () => {
     setError('');
     setLoading(true);
     try {
-      await loginStudent(email, password);
+      // FIX: Changed from loginStudent to loginUser to match the import
+      await loginUser(email, password); 
       navigate('/dashboard'); 
     } catch {
       setError("Invalid email or password.");
@@ -44,7 +45,7 @@ const Login = () => {
       <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
-          <p className="text-gray-500 mt-2">Log in to your student account</p>
+          <p className="text-gray-500 mt-2">Log in to your portal</p>
         </div>
         
         {successMsg && (
@@ -101,7 +102,7 @@ const Login = () => {
         </button>
 
         <p className="mt-8 text-center text-sm text-gray-600">
-          New student? <Link to="/register" className="text-blue-600 font-semibold hover:underline">Create an account</Link>
+          New user? <Link to="/register" className="text-blue-600 font-semibold hover:underline">Create an account</Link>
         </p>
       </div>
     </div>

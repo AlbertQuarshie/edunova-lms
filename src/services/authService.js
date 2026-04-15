@@ -6,31 +6,34 @@ import {
   GoogleAuthProvider,
   signInWithPopup
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 
 const googleProvider = new GoogleAuthProvider();
 
-// GOOGLE SIGN-IN
+// 1. GOOGLE SIGN-IN (With Role Check)
 export const signInWithGoogle = async () => {
   const result = await signInWithPopup(auth, googleProvider);
   const user = result.user;
 
-  // Check if a profile exists, if not, create one
-  const userDoc = await getDoc(doc(db, "users", user.uid));
+  // Check if user already exists in Firestore
+  const userDocRef = doc(db, "users", user.uid);
+  const userDoc = await getDoc(userDocRef);
 
   if (!userDoc.exists()) {
-    await setDoc(doc(db, "users", user.uid), {
+    // New User: Create student profile by default
+    await setDoc(userDocRef, {
       uid: user.uid,
       name: user.displayName,
       email: user.email,
-      role: "student",
-      createdAt: new Date()
+      photoURL: user.photoURL,
+      role: "student", // Default role
+      createdAt: serverTimestamp()
     });
   }
   return user;
 };
 
-// REGISTER: Email/Password
+// 2. REGISTER STUDENT (Email/Password)
 export const registerStudent = async (email, password, fullName) => {
   const { user } = await createUserWithEmailAndPassword(auth, email, password);
   
@@ -38,18 +41,17 @@ export const registerStudent = async (email, password, fullName) => {
     uid: user.uid,
     name: fullName,
     email: email,
-    role: "student",
-    createdAt: new Date()
+    role: "student", // Explicitly set as student
+    createdAt: serverTimestamp()
   });
 
-  await signOut(auth); // Require login after registration
   return user;
 };
 
-// LOGIN: Email/Password
-export const loginStudent = (email, password) => {
+// 3. LOGIN (Standard)
+export const loginUser = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
-// LOGOUT
+// 4. LOGOUT
 export const logoutUser = () => signOut(auth);

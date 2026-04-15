@@ -18,6 +18,10 @@ import Results from './pages/student/Results';
 import Profile from './pages/student/Profile';
 import MyCourses from './pages/student/MyCourses';
 
+// Admin Pages
+import AdminDashboard from './pages/admin/AdminDashboard';
+import ManageCourse from './pages/admin/ManageCourse';
+
 function App() {
   return (
     <AuthProvider>
@@ -34,11 +38,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <div className="flex">
+                    {/* Fixed Sidebar */}
                     <Sidebar />
+                    
+                    {/* Main Content Area (Shifted right by 64px to clear fixed sidebar) */}
                     <div className="flex-1 ml-64 min-h-screen flex flex-col">
                       <Navbar />
                       <main className="p-6 flex-1">
                         <Routes>
+                          {/* Common & Student Routes */}
                           <Route path="/dashboard" element={<Dashboard />} />
                           <Route path="/courses" element={<Courses />} />
                           <Route path="/my-courses" element={<MyCourses />} />
@@ -46,6 +54,13 @@ function App() {
                           <Route path="/assignments" element={<Assignments />} />
                           <Route path="/results" element={<Results />} />
                           <Route path="/profile" element={<Profile />} />
+
+                          {/* Admin Only Routes */}
+                          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                          <Route path="/admin/manage-course" element={<ManageCourse />} />
+                          
+
+                          {/* Redirects */}
                           <Route path="/" element={<Navigate to="/dashboard" />} />
                         </Routes>
                       </main>
