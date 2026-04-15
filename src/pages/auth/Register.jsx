@@ -17,7 +17,11 @@ const Register = () => {
     try {
       const { email, password, name } = formData;
       await registerStudent(email, password, name);
-      navigate('/dashboard');
+      
+      // Navigate to login and pass a success message in the state
+      navigate('/login', { 
+        state: { message: "Account created successfully! Please log in to continue." } 
+      });
     } catch (err) {
       setError(err.message);
     } finally {
