@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../config/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { Users, BookOpen, CheckCircle, PlusCircle, Loader2 } from 'lucide-react';
+import { Users, BookOpen, Activity, Plus, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
@@ -15,14 +15,10 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // 1. Fetch Students count
         const studentsQuery = query(collection(db, "users"), where("role", "==", "student"));
         const studentsSnap = await getDocs(studentsQuery);
         
-        // 2. Fetch Courses count
         const coursesSnap = await getDocs(collection(db, "courses"));
-        
-        // 3. Fetch Total Enrollments
         const enrollmentsSnap = await getDocs(collection(db, "enrollments"));
 
         setStats({
@@ -40,68 +36,66 @@ const AdminDashboard = () => {
     fetchStats();
   }, []);
 
-  const statCards = [
-    { label: 'Total Students', value: stats.totalStudents, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Active Courses', value: stats.totalCourses, icon: BookOpen, color: 'text-purple-600', bg: 'bg-purple-50' },
-    { label: 'Total Enrollments', value: stats.totalEnrollments, icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-50' },
-  ];
-
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <Loader2 className="animate-spin text-blue-600" size={40} />
+      <div className="flex h-[60vh] items-center justify-center">
+        <Loader2 className="animate-spin text-slate-800" size={32} />
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <header className="flex justify-between items-center mb-8">
+    <div className="max-w-5xl mx-auto p-4 md:p-8 font-sans">
+      
+      {/* Minimalist Header */}
+      <header className="flex flex-col md:flex-row justify-between md:items-end mb-10 pb-6 border-b border-slate-200 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Admin Overview</h1>
-          <p className="text-gray-500">Real-time data from your LMS platform.</p>
+          <p className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-1">Control Center</p>
+          <h1 className="text-3xl font-light text-slate-900 tracking-tight">EduNova Admin</h1>
         </div>
         <Link 
           to="/admin/add-course" 
-          className="flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+          className="flex items-center justify-center px-6 py-2.5 bg-slate-900 text-white text-sm rounded-full font-medium hover:bg-slate-800 transition-colors"
         >
-          <PlusCircle size={20} className="mr-2" />
+          <Plus size={16} className="mr-2" />
           Create Course
         </Link>
       </header>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        {statCards.map((stat) => (
-          <div key={stat.label} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center">
-            <div className={`p-4 rounded-xl ${stat.bg} ${stat.color} mr-4`}>
-              <stat.icon size={28} />
+      {/* Unified Command Panel */}
+      <div className="bg-slate-900 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50">
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-800">
+          
+          {/* Stat: Students */}
+          <div className="p-8 md:p-10 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-slate-400 text-sm font-medium">Registered Students</span>
+              <Users size={20} className="text-slate-500" />
             </div>
-            <div>
-              <p className="text-gray-500 text-sm font-medium">{stat.label}</p>
-              <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
-            </div>
+            <p className="text-5xl font-light text-white">{stats.totalStudents}</p>
           </div>
-        ))}
-      </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Insights</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-            <h3 className="font-bold text-gray-700">Course Saturation</h3>
-            <p className="text-sm text-gray-500 mt-1">
-              Currently hosting {stats.totalCourses} unique curricula with {stats.totalEnrollments} student registrations.
-            </p>
+          {/* Stat: Courses */}
+          <div className="p-8 md:p-10 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-slate-400 text-sm font-medium">Active Curricula</span>
+              <BookOpen size={20} className="text-slate-500" />
+            </div>
+            <p className="text-5xl font-light text-white">{stats.totalCourses}</p>
           </div>
-          <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-            <h3 className="font-bold text-gray-700">User Growth</h3>
-            <p className="text-sm text-gray-500 mt-1">
-              {stats.totalStudents} students have successfully registered profiles.
-            </p>
+
+          {/* Stat: Enrollments */}
+          <div className="p-8 md:p-10 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-slate-400 text-sm font-medium">Total Enrollments</span>
+              <Activity size={20} className="text-slate-500" />
+            </div>
+            <p className="text-5xl font-light text-white">{stats.totalEnrollments}</p>
           </div>
+
         </div>
       </div>
+
     </div>
   );
 };
