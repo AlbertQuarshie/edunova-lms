@@ -1,4 +1,25 @@
-# Logs
+# --- SECURITY CRITICAL ---
+# This blocks your Gemini and Firebase keys from being uploaded
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# --- DEPENDENCIES ---
+# Never upload node_modules; they are too large and easily rebuilt
+node_modules/
+.pnp
+.pnp.js
+
+# --- BUILD OUTPUT ---
+# These are generated files; no need to track them
+dist/
+dist-ssr/
+build/
+*.local
+
+# --- LOGS ---
 logs
 *.log
 npm-debug.log*
@@ -7,18 +28,21 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# --- EDITOR / SYSTEM FILES ---
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+Thumbs.db
+
+# --- TEST RESULTS ---
+/coverage
+/.nyc_output
+
+# --- TYPESCRIPT ---
+*.tsbuildinfo

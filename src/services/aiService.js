@@ -1,30 +1,46 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from '@google/genai';
+import { db } from "../config/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 
-const apiKey = import.meta.env.VITE_GEMINI_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
+const ai = new GoogleGenAI({ 
+    apiKey: import.meta.env.VITE_GEMINI_KEY 
+});
 
-export const askTutor = async (userQuestion, courseContext = "") => {
+/**
+ * Fetches course data and asks the AI
+ */
+export const askTutor = async (userQuestion) => {
   try {
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+    // 1. Fetch live context from Firestore
+    const querySnapshot = await getDocs(collection(db, "courses"));
+    const context = querySnapshot.docs
+      .map(doc => {
+        const d = doc.data();
+        return `COURSE: ${d.title} | CATEGORY: ${d.category} | INFO: ${d.description}`;
+      })
+      .join("\n");
+
+    // 2. Call the 2026 Model
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite-preview',
+      contents: [{ role: 'user', parts: [{ text: userQuestion }] }],
+      config: {
+        systemInstruction: `
+          You are the EduNova LMS Tutor. 
+          Use this database of courses to answer:
+          ${context}
+          
+          Guidelines:
+          - If the course exists, explain it concisely.
+          - If it's missing, suggest a similar category from the list.
+          - Keep responses under 3 sentences and very friendly.
+        `
+      }
     });
 
-
-    const prompt = `
-      You are an expert tutor for EduNova LMS. 
-      Below is the list of courses currently available in our Firestore database:
-      ${courseContext}
-
-      Use this information to answer the student's question accurately. 
-      If they ask about a course not listed, tell them we don't offer it yet.
-      
-      Student Question: "${userQuestion}"
-    `;
-
-    const result = await model.generateContent(prompt);
-    return result.response.text();
+    return response.text;
   } catch (error) {
-    console.error("Gemini AI Error:", error);
-    return "I'm having trouble accessing the course catalog right now.";
+    console.error('EduNova AI Error:', error);
+    return "I'm having a bit of trouble syncing with the course list. Try again in a second!";
   }
 };

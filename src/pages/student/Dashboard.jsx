@@ -87,7 +87,7 @@ const Dashboard = () => {
       {/* Main Content Area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Enrolled Courses List - Takes up 2 columns */}
+        {/* Enrolled Courses List  */}
         <section className="lg:col-span-2">
           <div className="flex justify-between items-end mb-6">
             <h2 className="text-2xl font-bold text-gray-800">My Learning Journey</h2>
