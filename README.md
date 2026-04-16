@@ -1,38 +1,40 @@
-# 🎓 EduNova LMS
+# EduNova LMS
 
-The Future of Intelligent Learning Management
+---
 
-------------------------------------------------------------------------
+## A. Contributor
 
-## Overview
+- **Albert Junior Quarshie**
+
+## B. Overview
 
 **EduNova** is a premium, AI-integrated Learning Management System (LMS)
 designed to bridge the gap between static content and interactive
 education.
 
-It provides students with a dynamic environment to learn and interact
-with an AI tutor, while giving administrators powerful, paginated tools
-to manage curriculum and student enrollments in real time.
+- It provides students with a dynamic environment to learn and interact
+  with an AI tutor, while giving administrators powerful, paginated tools
+  to manage curriculum and student enrollments in real time.
 
-Built with a focus on high-performance architecture and a modern,
-utility-first design approach.
+- Built with a focus on high-performance architecture and a modern,
+  utility-first design approach.
 
-------------------------------------------------------------------------
+---
 
-## Installation
+## C. Installation
 
-Follow these steps to set up the project locally:
+- Follow these steps to set up the project locally:
 
 ### 1. Clone the Repository
 
-``` bash
+```bash
 git clone https://github.com/AlbertQuarshie/edunova-lms.git
 cd edunova-lms
 ```
 
 ### 2. Install Dependencies
 
-``` bash
+```bash
 npm install
 ```
 
@@ -47,68 +49,68 @@ Create a `.env` file in the root directory and add the following:
 
 ### 4. Initialize Firebase
 
-Make sure the following are enabled in your Firebase console: -
-Firestore Database - Authentication
+- Make sure the following are enabled in your Firebase console:
+- Firestore Database
+- Authentication
 
-------------------------------------------------------------------------
+---
 
-## Usage
+## D. Usage
 
-Start the development server:
+- Start the development server:
 
-``` bash
+```bash
 npm run dev
 ```
 
-###  Student View
+### 1. Student View
 
--   Navigate to `/dashboard`
--   View enrolled courses
--   Interact with the AI tutor
+- Navigate to `/dashboard`
+- View enrolled courses
+- Interact with the AI tutor
 
-### Admin View
+### 2. Admin View
 
--   Access `/admin/manage-courses`
--   Add, edit, and manage courses
--   Navigate large datasets with pagination
+- Access `/admin/manage-courses`
+- Add, edit, and manage courses
+- Navigate large datasets with pagination
 
-------------------------------------------------------------------------
+---
 
-## Features
+## E. Features
 
-###  AI-Powered Tutoring
+### 1. AI-Powered Tutoring
 
-Integrated Google Gemini AI (`gemini-1.5-flash`) that answers student
-questions based strictly on the course catalog
+- Integrated Google Gemini AI (`gemini-3.1-flash-lite-preview`) that answers student
+  questions based strictly on the course catalog
 
-###  Advanced Course Management
+### 3. Advanced Course Management
 
-Full CRUD operations with smooth pagination for large course libraries
+- Full CRUD operations with smooth pagination for large course libraries
 
-###  Enrollment Registry
+### 4. Enrollment Registry
 
-Centralized admin system to approve or remove student enrollments
+- Centralized admin system to approve or remove student enrollments
 
-###  Real-Time Feedback System
+### 5. Real-Time Feedback System
 
-Custom toast notifications for responsive UI feedback
+- Custom toast notifications for responsive UI feedback
 
-###  Fully Responsive Design
+### 6. Fully Responsive Design
 
-Mobile-first interface built with Tailwind CSS and Lucide icons
+- Mobile-first interface built with Tailwind CSS and Lucide icons
 
-------------------------------------------------------------------------
+---
 
-##  Tech Stack
+## F. Tech Stack
 
-  Layer       Technology
-  ----------- -------------------------
-  Frontend    React.js (Vite)
-  Styling     Tailwind CSS
-  Icons       Lucide React
-  Database    Firebase Firestore
-  Auth        Firebase Authentication
-  AI Engine   Google Gemini API
+| Layer     | Technology              |
+| --------- | ----------------------- |
+| Frontend  | React.js (Vite)         |
+| Styling   | Tailwind CSS            |
+| Icons     | Lucide React            |
+| Database  | Firebase Firestore      |
+| Auth      | Firebase Authentication |
+| AI Engine | Google Gemini API       |
 
-------------------------------------------------------------------------
-
+---
