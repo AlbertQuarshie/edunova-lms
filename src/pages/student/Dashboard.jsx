@@ -1,138 +1,120 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getCourseById, enrollInCourse, getStudentEnrollments } from '../../services/courseService';
 import { useAuth } from '../../hooks/useAuth';
-import { getUserProfile } from '../../services/userService';
-import { getStudentEnrollments, getAllCourses } from '../../services/courseService'; // Added getAllCourses
-import { Link } from 'react-router-dom';
-import { BookOpen, GraduationCap, LayoutGrid, ArrowRight } from 'lucide-react';
+import Toast from '../../components/layout/Toast';
 
-const Dashboard = () => {
+const CourseDetails = () => {
+  const { id } = useParams();
   const { user } = useAuth();
-  const [profile, setProfile] = useState(null);
-  const [enrollments, setEnrollments] = useState([]);
-  const [totalCatalog, setTotalCatalog] = useState(0);
+  const navigate = useNavigate();
+  
+  const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [enrolling, setEnrolling] = useState(false);
+  const [enrollmentStatus, setEnrollmentStatus] = useState(null);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
   useEffect(() => {
-    const loadDashboardData = async () => {
-      if (!user) return;
+    const fetchCourseAndStatus = async () => {
       try {
-        // Fetch profile, enrollments, and total courses available in parallel
-        const [profileData, enrollmentData, allCoursesData] = await Promise.all([
-          getUserProfile(user.uid),
-          getStudentEnrollments(user.uid),
-          getAllCourses() 
-        ]);
-        
-        setProfile(profileData);
-        setEnrollments(enrollmentData);
-        setTotalCatalog(allCoursesData.length);
-      } catch (err) {
-        console.error("Dashboard load error:", err);
+        const courseData = await getCourseById(id);
+        setCourse(courseData);
+
+        if (user) {
+          const enrollments = await getStudentEnrollments(user.uid);
+          const currentEnrollment = enrollments.find(e => e.courseId === id);
+          if (currentEnrollment) {
+            setEnrollmentStatus(currentEnrollment.status);
+          }
+        }
+      } catch {
+        navigate('/courses');
       } finally {
         setLoading(false);
       }
     };
+    fetchCourseAndStatus();
+  }, [id, user, navigate]);
 
-    loadDashboardData();
-  }, [user]);
+  const handleEnroll = async () => {
+    if (!user) return navigate('/login');
+    if (enrollmentStatus) return;
+
+    setEnrolling(true);
+    try {
+      await enrollInCourse(user.uid, id, course.title);
+      setEnrollmentStatus('pending'); 
+      setToast({ show: true, message: "Request sent! Please wait for admin approval.", type: 'success' });
+    } catch (err) {
+      setToast({ show: true, message: err.message, type: 'error' });
+    } finally {
+      setEnrolling(false);
+    }
+  };
 
   if (loading) return (
-    <div className="flex h-screen items-center justify-center text-gray-500 font-medium">
-      <div className="animate-pulse">Loading your learning portal...</div>
+    <div className="flex h-96 items-center justify-center text-slate-400 animate-pulse font-medium">
+      Loading course particulars...
     </div>
   );
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <header className="mb-10">
-        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-          Hello, {profile?.name?.split(' ')[0] || 'Learner'}! 
-        </h1>
-        <p className="text-gray-500 mt-2 text-lg">Here is what's happening with your studies today.</p>
-      </header>
-
-      {/* Simplified Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex items-center space-x-4">
-          <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
-            <BookOpen size={28} />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Enrolled</p>
-            <p className="text-3xl font-black text-gray-800">{enrollments.length}</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex items-center space-x-4">
-          <div className="p-3 bg-purple-50 text-purple-600 rounded-2xl">
-            <LayoutGrid size={28} />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Catalog</p>
-            <p className="text-3xl font-black text-gray-800">{totalCatalog}</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex items-center space-x-4">
-          <div className="p-3 bg-green-50 text-green-600 rounded-2xl">
-            <GraduationCap size={28} />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Status</p>
-            <p className="text-3xl font-black text-gray-800">Active</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Enrolled Courses List  */}
-        <section className="lg:col-span-2">
-          <div className="flex justify-between items-end mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">My Learning Journey</h2>
-            <Link to="/courses" className="text-blue-600 text-sm font-bold hover:underline flex items-center">
-              Browse All <ArrowRight size={16} className="ml-1" />
-            </Link>
-          </div>
-
-          {enrollments.length === 0 ? (
-            <div className="bg-gray-50 border-2 border-dashed border-gray-200 p-12 rounded-3xl text-center">
-              <p className="text-gray-500 mb-6 font-medium">Your learning list is currently empty.</p>
-              <Link to="/courses" className="px-8 py-3 bg-gray-900 text-white rounded-2xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-gray-200">
-                Start Learning Now
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {enrollments.map((enrollment) => (
-                <Link 
-                  key={enrollment.id} 
-                  to={`/courses/${enrollment.courseId}`}
-                  className="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all"
-                >
-                  <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center font-bold group-hover:bg-blue-600 transition-colors">
-                      {enrollment.courseTitle.charAt(0)}
-                    </div>
-                    <span className="ml-auto px-3 py-1 bg-gray-50 text-gray-500 text-[10px] font-bold uppercase rounded-full">
-                      {enrollment.status || 'Enrolled'}
-                    </span>
-                  </div>
-                  <h4 className="font-bold text-gray-800 text-lg leading-tight mb-2 group-hover:text-blue-600 transition-colors">
-                    {enrollment.courseTitle}
-                  </h4>
-                  <p className="text-sm text-gray-400">Click to continue learning</p>
-                </Link>
-              ))}
-            </div>
-          )}
-        </section>
-
+    <div className="max-w-5xl mx-auto p-6">
+      {toast.show && <Toast message={toast.message} type={toast.type} onClose={() => setToast({ ...toast, show: false })} />}
       
+      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="h-72 bg-slate-900 p-10 flex flex-col justify-end text-white relative">
+          <div className="absolute top-10 right-10 opacity-10">
+             <div className="w-32 h-32 rounded-full border-8 border-white"></div>
+          </div>
+          <span className="px-3 py-1 bg-blue-500 text-[10px] font-black rounded-full w-fit mb-4 uppercase tracking-widest">
+            {course.category}
+          </span>
+          <h1 className="text-4xl font-black tracking-tight">{course.title}</h1>
+          <p className="mt-2 text-slate-400 font-medium">Instructor: {course.instructor || 'EduNova Faculty'}</p>
+        </div>
+
+        <div className="p-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="lg:col-span-2 space-y-8">
+              <section>
+                <h2 className="text-2xl font-bold text-slate-800 mb-4">Course Overview</h2>
+                <p className="text-slate-600 leading-relaxed text-lg">{course.description}</p>
+              </section>
+            </div>
+
+            <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100 h-fit">
+              <h3 className="font-bold text-slate-800 mb-6 text-center">Enrollment Status</h3>
+              
+              <button 
+                disabled={enrolling || enrollmentStatus}
+                onClick={handleEnroll}
+                className={`w-full py-4 font-bold rounded-2xl shadow-lg transition-all transform active:scale-95 ${
+                  enrollmentStatus === 'active' 
+                    ? 'bg-emerald-500 text-white cursor-default' 
+                    : enrollmentStatus === 'pending'
+                    ? 'bg-amber-500 text-white cursor-default'
+                    : 'bg-slate-900 hover:bg-blue-600 text-white'
+                } ${enrolling ? 'opacity-70' : ''}`}
+              >
+                {enrolling ? 'Processing...' : 
+                 enrollmentStatus === 'active' ? '✓ Fully Enrolled' : 
+                 enrollmentStatus === 'pending' ? 'Awaiting Approval' : 
+                 'Request Enrollment'}
+              </button>
+              
+              <p className="text-xs text-center text-slate-400 mt-6 leading-relaxed font-medium">
+                {enrollmentStatus === 'active' ? "You have full access to all materials." : 
+                 enrollmentStatus === 'pending' ? "The Registrar is reviewing your request." : 
+                 "Access to this course requires manual administrator verification."}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default CourseDetails;
