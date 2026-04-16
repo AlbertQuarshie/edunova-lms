@@ -29,6 +29,7 @@ const Sidebar = () => {
   const adminLinks = [
     { name: 'Admin Overview', path: '/admin', icon: ShieldCheck },
     { name: 'Manage Courses', path: '/admin/manage-course', icon: Settings },
+    { name: 'Manage Users', path: '/admin/manage-users', icon: User },
   ];
 
   const role = userData?.role;

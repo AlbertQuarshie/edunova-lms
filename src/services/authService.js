@@ -1,28 +1,39 @@
 import { auth, db } from "../config/firebaseConfig";
 import { 
+  createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut,
   GoogleAuthProvider,
   signInWithPopup
 } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 
 const googleProvider = new GoogleAuthProvider();
 
-/**
- * Helper to fetch user role from Firestore
- */
-const getUserWithRole = async (user) => {
-  const userDoc = await getDoc(doc(db, "users", user.uid));
-  if (userDoc.exists()) {
-    return { ...user, role: userDoc.data().role };
-  }
-  return { ...user, role: 'student' }; // Default fallback
+// FIX: Ensure this name matches the import in Register.jsx exactly
+export const registerStudent = async (email, password, fullName) => {
+  const { user } = await createUserWithEmailAndPassword(auth, email, password);
+  
+  const userData = {
+    uid: user.uid,
+    name: fullName,
+    email: email,
+    role: "student", // All new registrations are students by default
+    createdAt: serverTimestamp()
+  };
+
+  await setDoc(doc(db, "users", user.uid), userData);
+  return { ...user, role: "student" };
 };
 
 export const loginUser = async (email, password) => {
   const { user } = await signInWithEmailAndPassword(auth, email, password);
-  return await getUserWithRole(user);
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  
+  if (userDoc.exists()) {
+    return { ...user, role: userDoc.data().role };
+  }
+  return { ...user, role: 'student' };
 };
 
 export const signInWithGoogle = async () => {

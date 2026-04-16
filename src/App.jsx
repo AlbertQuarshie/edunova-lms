@@ -25,6 +25,7 @@ import MyCourses from "./pages/student/MyCourses";
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageCourse from "./pages/admin/ManageCourse";
+import ManageUsers from "./pages/admin/ManageUsers";
 
 function App() {
   return (
@@ -60,10 +61,8 @@ function App() {
 
                           {/* Admin Routes */}
                           <Route path="/admin" element={<AdminDashboard />} />
-                          <Route
-                            path="/admin/manage-course"
-                            element={<ManageCourse />}
-                          />
+                          <Route path="/admin/manage-course" element={<ManageCourse />}/>
+                          <Route path="/admin/manage-users" element={<ManageUsers />} />
 
                           {/* Default Redirect */}
                           <Route
