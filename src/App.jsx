@@ -26,6 +26,8 @@ import MyCourses from "./pages/student/MyCourses";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageCourse from "./pages/admin/ManageCourse";
 import ManageUsers from "./pages/admin/ManageUsers";
+import ViewEnrollments from "./pages/admin/ViewEnrollments";
+
 
 function App() {
   return (
@@ -63,6 +65,7 @@ function App() {
                           <Route path="/admin" element={<AdminDashboard />} />
                           <Route path="/admin/manage-course" element={<ManageCourse />}/>
                           <Route path="/admin/manage-users" element={<ManageUsers />} />
+                          <Route path="/admin/enrollments" element={<ViewEnrollments />} />
 
                           {/* Default Redirect */}
                           <Route
