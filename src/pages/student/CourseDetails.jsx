@@ -11,7 +11,7 @@ const CourseDetails = () => {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
-  const [isEnrolled, setIsEnrolled] = useState(false); // New state
+  const [enrollmentStatus, setEnrollmentStatus] = useState(null); 
 
   useEffect(() => {
     const fetchCourseAndStatus = async () => {
@@ -19,14 +19,14 @@ const CourseDetails = () => {
         const courseData = await getCourseById(id);
         setCourse(courseData);
 
-        // Check if user is already enrolled in this specific course
         if (user) {
           const enrollments = await getStudentEnrollments(user.uid);
-          const alreadyIn = enrollments.some(e => e.courseId === id);
-          setIsEnrolled(alreadyIn);
+          const currentEnrollment = enrollments.find(e => e.courseId === id);
+          if (currentEnrollment) {
+            setEnrollmentStatus(currentEnrollment.status); 
+          }
         }
-      } catch (err) {
-        console.error(err);
+      } catch {
         navigate('/courses');
       } finally {
         setLoading(false);
@@ -37,14 +37,13 @@ const CourseDetails = () => {
 
   const handleEnroll = async () => {
     if (!user) return navigate('/login');
-    if (isEnrolled) return; // Prevent double clicks
+    if (enrollmentStatus) return;
 
     setEnrolling(true);
     try {
       await enrollInCourse(user.uid, id, course.title);
-      setIsEnrolled(true); // Update button immediately
-      alert(`Successfully enrolled in ${course.title}!`);
- 
+      setEnrollmentStatus('pending'); 
+      alert(`Request sent! Please wait for admin approval.`);
     } catch (err) {
       alert(err.message);
     } finally {
@@ -52,7 +51,7 @@ const CourseDetails = () => {
     }
   };
 
-  if (loading) return <div className="p-10 text-center">Loading course details...</div>;
+  if (loading) return <div className="p-10 text-center">Loading course...</div>;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -75,22 +74,29 @@ const CourseDetails = () => {
             </div>
 
             <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 h-fit">
-              <h3 className="font-bold text-gray-800 mb-4">Ready to start?</h3>
+              <h3 className="font-bold text-gray-800 mb-4">Course Access</h3>
               
               <button 
-                disabled={enrolling || isEnrolled}
+                disabled={enrolling || enrollmentStatus}
                 onClick={handleEnroll}
                 className={`w-full py-3 font-bold rounded-lg shadow-lg transition transform ${
-                  isEnrolled 
+                  enrollmentStatus === 'active' 
                     ? 'bg-green-500 text-white cursor-default' 
+                    : enrollmentStatus === 'pending'
+                    ? 'bg-amber-500 text-white cursor-default'
                     : 'bg-blue-600 hover:bg-blue-700 text-white hover:-translate-y-1'
                 } ${enrolling ? 'opacity-70' : ''}`}
               >
-                {enrolling ? 'Processing...' : isEnrolled ? '✓ Enrolled' : 'Enroll Now'}
+                {enrolling ? 'Processing...' : 
+                 enrollmentStatus === 'active' ? '✓ Enrolled' : 
+                 enrollmentStatus === 'pending' ? 'Waiting for Approval' : 
+                 'Enroll Now'}
               </button>
               
-              <p className="text-xs text-center text-gray-500 mt-4">
-                {isEnrolled ? "You have access to this course." : "Free access for registered students."}
+              <p className="text-xs text-center text-gray-500 mt-4 italic">
+                {enrollmentStatus === 'active' ? "You have full access." : 
+                 enrollmentStatus === 'pending' ? "Admin is currently reviewing your request." : 
+                 "Enrollment requires admin approval."}
               </p>
             </div>
           </div>
