@@ -6,6 +6,7 @@ import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 // Layout Components
 import Sidebar from './components/layout/Sidebar';
 import Navbar from './components/layout/Navbar';
+import AITutor from './components/ai/AITutor'; // New AI Tutor Component
 
 // Pages
 import Login from './pages/auth/Login';
@@ -36,15 +37,16 @@ function App() {
               element={
                 <ProtectedRoute>
                   <div className="flex">
-                    {/* Fixed Sidebar */}
+                 
                     <Sidebar />
                     
-                    {/* Main Content Area (Shifted right by 64px to clear fixed sidebar) */}
-                    <div className="flex-1 ml-64 min-h-screen flex flex-col">
+                    {/* Main Content Area */}
+                    <div className="flex-1 ml-64 min-h-screen flex flex-col relative">
                       <Navbar />
+                      
                       <main className="p-6 flex-1">
                         <Routes>
-                          {/* Common & Student Routes */}
+                          {/*Student Routes */}
                           <Route path="/dashboard" element={<Dashboard />} />
                           <Route path="/courses" element={<Courses />} />
                           <Route path="/my-courses" element={<MyCourses />} />
@@ -54,12 +56,14 @@ function App() {
                           {/* Admin Only Routes */}
                           <Route path="/admin/dashboard" element={<AdminDashboard />} />
                           <Route path="/admin/manage-course" element={<ManageCourse />} />
-                          
 
                           {/* Redirects */}
                           <Route path="/" element={<Navigate to="/dashboard" />} />
                         </Routes>
                       </main>
+
+                      {/* AI Tutor - Placed inside Protected area so it's only for logged-in users */}
+                      <AITutor />
                     </div>
                   </div>
                 </ProtectedRoute>
