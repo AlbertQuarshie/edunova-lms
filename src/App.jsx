@@ -11,7 +11,7 @@ import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 // Layout Components
 import Sidebar from "./components/layout/Sidebar";
 import Navbar from "./components/layout/Navbar";
-import AITutor from "./components/ai/AITutor"; // New AI Tutor Component
+import AITutor from "./components/ai/AITutor";
 
 // Pages
 import Login from "./pages/auth/Login";
@@ -27,7 +27,6 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageCourse from "./pages/admin/ManageCourse";
 import ManageUsers from "./pages/admin/ManageUsers";
 import ViewEnrollments from "./pages/admin/ViewEnrollments";
-
 
 function App() {
   return (
@@ -45,8 +44,12 @@ function App() {
               element={
                 <ProtectedRoute>
                   <div className="flex">
+                    {/* Sidebar stays on the left */}
                     <Sidebar />
-                    {/* Main Content Area */}
+                    
+                    {/* FIX: flex-1 makes this take remaining space.
+                        ml-64 matches your Sidebar width to prevent overlap.
+                    */}
                     <div className="flex-1 ml-64 min-h-screen flex flex-col relative">
                       <Navbar />
                       <main className="p-6 flex-1">

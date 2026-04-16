@@ -42,34 +42,31 @@ const MyCourses = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {myCourses.map((course) => (
-            <div key={course.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              {/* Colored top bar based on status */}
-              <div className={`h-1.5 ${course.status === 'active' ? 'bg-emerald-500' : 'bg-amber-400'}`}></div>
-              
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-800 line-clamp-1 mb-6">{course.courseTitle}</h3>
-                
-                <div className="flex items-center justify-between border-t pt-4 border-slate-50">
-                  {course.status === 'active' ? (
-                    <>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Progress</span>
-                        <span className="text-sm font-bold text-slate-700">{course.progress || 0}%</span>
-                      </div>
-                     
-                    </>
-                  ) : (
-                    /* PENDING STATE: No button at all, just status text */
-                    <div className="flex items-center gap-2 text-amber-600 py-2">
-                      <Clock size={16} className="animate-pulse" />
-                      <span className="text-xs font-bold uppercase tracking-widest">Awaiting Admin Approval</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+        {myCourses.map((course) => (
+  <div key={course.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <h3 className="text-lg font-bold text-gray-800 mb-6">{course.courseTitle}</h3>
+    
+    <div className="flex items-center justify-between border-t pt-4">
+      {course.status === 'active' ? (
+        <>
+          <span className="text-sm font-bold text-slate-700">Progress: {course.progress || 0}%</span>
+          <Link 
+            to={`/courses/${course.courseId}`} 
+            className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg"
+          >
+            Go to Class
+          </Link>
+        </>
+      ) : (
+        /* Button is totally removed here */
+        <div className="flex items-center gap-2 text-amber-600">
+          <Clock size={16} className="animate-pulse" />
+          <span className="text-xs font-bold uppercase">Awaiting Admin Approval</span>
+        </div>
+      )}
+    </div>
+  </div>
+))}
         </div>
       )}
     </div>
