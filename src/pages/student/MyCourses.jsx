@@ -50,12 +50,7 @@ const MyCourses = () => {
       {course.status === 'active' ? (
         <>
           <span className="text-sm font-bold text-slate-700">Progress: {course.progress || 0}%</span>
-          <Link 
-            to={`/courses/${course.courseId}`} 
-            className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg"
-          >
-            Go to Class
-          </Link>
+          
         </>
       ) : (
         /* Button is totally removed here */

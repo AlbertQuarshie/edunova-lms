@@ -1,14 +1,9 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 
-// Layout Components
+// Layout & UI
 import Sidebar from "./components/layout/Sidebar";
 import Navbar from "./components/layout/Navbar";
 import AITutor from "./components/ai/AITutor";
@@ -21,8 +16,6 @@ import Courses from "./pages/student/Courses";
 import CourseDetails from "./pages/student/CourseDetails";
 import Profile from "./pages/student/Profile";
 import MyCourses from "./pages/student/MyCourses";
-
-// Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageCourse from "./pages/admin/ManageCourse";
 import ManageUsers from "./pages/admin/ManageUsers";
@@ -34,7 +27,7 @@ function App() {
       <Router>
         <div className="min-h-screen bg-gray-50">
           <Routes>
-            {/* Public Routes */}
+            {/* Public Routes - No Protection */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
@@ -43,25 +36,18 @@ function App() {
               path="/*"
               element={
                 <ProtectedRoute>
-                  <div className="flex">
-                    {/* Sidebar stays on the left */}
+                  <div className="flex min-h-screen">
                     <Sidebar />
                     
-                    {/* FIX: flex-1 makes this take remaining space.
-                        ml-64 matches your Sidebar width to prevent overlap.
-                    */}
-                    <div className="flex-1 ml-64 min-h-screen flex flex-col relative">
+                    {/* ml-64 must match Sidebar width to prevent cutoff */}
+                    <div className="flex-1 ml-64 flex flex-col min-h-screen relative overflow-x-hidden">
                       <Navbar />
-                      <main className="p-6 flex-1">
+                      <main className="p-6 flex-1 bg-gray-50">
                         <Routes>
-                          {/* Student Routes */}
                           <Route path="/dashboard" element={<Dashboard />} />
                           <Route path="/courses" element={<Courses />} />
                           <Route path="/my-courses" element={<MyCourses />} />
-                          <Route
-                            path="/courses/:id"
-                            element={<CourseDetails />}
-                          />
+                          <Route path="/courses/:id" element={<CourseDetails />} />
                           <Route path="/profile" element={<Profile />} />
 
                           {/* Admin Routes */}
@@ -70,11 +56,7 @@ function App() {
                           <Route path="/admin/manage-users" element={<ManageUsers />} />
                           <Route path="/admin/enrollments" element={<ViewEnrollments />} />
 
-                          {/* Default Redirect */}
-                          <Route
-                            path="/"
-                            element={<Navigate to="/dashboard" replace />}
-                          />
+                          <Route path="/" element={<Navigate to="/dashboard" replace />} />
                         </Routes>
                       </main>
                       <AITutor />

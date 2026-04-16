@@ -15,18 +15,23 @@ export const AuthProvider = ({ children }) => {
       if (currentUser) {
         setUser(currentUser);
         try {
-          // Fetches the specific user document to get name/role [cite: 18-20]
+          // Attempt to get role and name
           const userDoc = await getDoc(doc(db, "users", currentUser.uid));
           if (userDoc.exists()) {
             setUserData(userDoc.data());
+          } else {
+            // Handle case where auth user exists but firestore doc hasn't propagated yet
+            setUserData(null);
           }
         } catch (error) {
           console.error("Error fetching user profile:", error);
+          setUserData(null);
         }
       } else {
         setUser(null);
         setUserData(null);
       }
+      // CRITICAL: Ensure loading is false AFTER all async work is done
       setLoading(false);
     });
 
@@ -37,7 +42,8 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ user, userData, loading, logout }}>
-      {!loading && children}
+      {/* Remove the !loading check here to allow the ProtectedRoute to handle the loading UI instead */}
+      {children}
     </AuthContext.Provider>
   );
 };
