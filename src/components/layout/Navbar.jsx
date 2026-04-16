@@ -1,42 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { getUserProfile } from '../../services/userService';
+import { User as UserIcon, Shield } from 'lucide-react';
 
 const Navbar = () => {
-  const { user } = useAuth();
-  const [profile, setProfile] = useState(null);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (user?.uid) {
-        const data = await getUserProfile(user.uid);
-      
-        if (data) setProfile(data);
-      }
-    };
-    fetchProfile();
-  }, [user]);
+  const { userData } = useAuth();
 
   return (
-    <nav className="h-20 bg-white px-8 flex items-center justify-between border-b border-gray-100 sticky top-0 z-50">
-      <div className="flex items-center"></div>
+    <nav className="h-20 bg-white border-b border-slate-100 px-8 flex items-center justify-between sticky top-0 z-50">
+      <div className="flex items-center gap-3">
+        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+        <h1 className="text-sm font-black uppercase tracking-widest text-slate-400">EduNova Portal</h1>
+      </div>
 
-      <div className="flex items-center space-x-3">
-        <div className="text-right flex flex-col justify-center">
-          <h3 className="text-base font-bold text-gray-900 leading-tight">
-            {/* REMOVE the hardcoded name here */}
-            {profile?.name || (user?.displayName) || "User"}
-          </h3>
-          <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest leading-none mt-1">
-            {profile?.role || "STUDENT"}
+      <div className="flex items-center gap-6">
+        <div className="text-right">
+          {/* Displays Name and Role from Firestore  */}
+          <p className="text-sm font-bold text-slate-900 leading-none">
+            {userData?.name || "User"}
           </p>
+          <div className="flex items-center justify-end gap-1 mt-1">
+            {userData?.role === 'admin' && <Shield size={10} className="text-blue-600" />}
+            <p className="text-[10px] font-black uppercase text-blue-600 tracking-tighter">
+              {userData?.role || "Student"}
+            </p>
+          </div>
         </div>
-        
-        <div className="w-10 h-10 bg-[#0f172a] rounded-xl flex items-center justify-center text-white font-bold shadow-sm">
-          <span className="text-lg">
-            {/* Dynamically get first letter */}
-            {profile?.name ? profile.name.charAt(0).toUpperCase() : (user?.email?.charAt(0).toUpperCase() || "U")}
-          </span>
+
+        {/* User Avatar Initial [cite: 336] */}
+        <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold uppercase">
+          {userData?.name?.charAt(0) || <UserIcon size={18} />}
         </div>
       </div>
     </nav>
